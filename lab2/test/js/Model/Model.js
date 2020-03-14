@@ -52,12 +52,12 @@ export default class Model {
                             this.myWorker.postMessage(1);
                         }
                     }
-                    else {
+                    break;
+                }
+                else {
                         if (window.Worker) {
                             this.myWorker.postMessage(0);
                         }
-                    }
-                    break;
                 }
             }
         }
