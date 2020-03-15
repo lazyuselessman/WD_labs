@@ -3,7 +3,6 @@ import Pair from "../Model/Pair.js";
 export default class Model {
     constructor() {
         this.dictionary = [];
-        this.counter = 0;
         this.correctPair = new Pair('', '');
 
         if (window.Worker) {
@@ -15,11 +14,11 @@ export default class Model {
         }
     }
 
-    getPairs() {
+    getPairs(n) {
         let pairs = [];
         let pair = this.dictionary[Math.floor(Math.random() * this.dictionary.length)];
         pairs.push(pair);
-        for (let size = 0; size < 2; size++) {
+        for (let size = 0; size < n - 1; size++) {
             let fail = false;
             while (!fail) {
                 fail = true;
@@ -33,114 +32,49 @@ export default class Model {
             }
             pairs.push(pair);
         }
-
+        this.correctPair = pairs[Math.floor(Math.random() * pairs.length)];
         return pairs;
     }
 
-    getCorrectPair(pairs) {
-        this.correctPair = pairs[Math.floor(Math.random() * pairs.length)];
-        return this.correctPair;
-    }
-
     submit() {
-        let answers = document.getElementById("answers").children;
-        for (let i = 0; i < answers.length; i++) {
-            if (answers[i].type == 'radio') {
-                if (answers[i].checked == true) {
-                    if (answers[i].value == this.correctPair.id) {
-                        if (window.Worker) {
+        if (window.Worker) {
+            const answers = document.getElementById("answers").children;
+            for (let i = 0; i < answers.length; i++) {
+                if (answers[i].name == 'answers') {
+                    if (answers[i].checked == true) {
+                        if (answers[i].value == this.correctPair.id) {
                             this.myWorker.postMessage(1);
                         }
-                    }
-                    break;
-                }
-                else {
-                        if (window.Worker) {
+                        else {
                             this.myWorker.postMessage(0);
                         }
+                        break;
+                    }
                 }
             }
         }
     }
 
-    add() {
-        const ukrainian = prompt('Enter ukrainian word:', '');
-        const english = prompt('Enter english word:', '');
-
-        const pair = new Pair(ukrainian, english);
-
-        this.dictionary.push(pair);
-    }
-
-    add_(ukrainian, english) {
+    add(ukrainian, english) {
         const pair = new Pair(ukrainian, english);
         this.dictionary.push(pair);
+        return pair;
     }
 
-    edit(id) {
+    getPair(id) {
         const itemIndex = this.dictionary.findIndex((pair) => pair.id === id);
-        let pair = this.dictionary[itemIndex];
-
-        document.getElementById(id).innerHTML = `
-            <tr id="${pair.id}">
-                <td style="color: black">
-                    <input type="text" value="${pair.ukrainian}">
-                </td>
-                <td style="color: black">
-                    <input type="text" value="${pair.english}">
-                </td>
-                <td>
-                    <button data-id="${pair.id}" class="save-button">Save</button>
-                    <button data-id="${pair.id}" class="cancel-button">Cancel</button>
-                </td>
-            </tr>`
+        return this.dictionary[itemIndex];
     }
 
     delete(id) {
         const pairIndex = this.dictionary.findIndex((pair) => pair.id === id);
         this.dictionary.splice(pairIndex, 1);
-
-        document.getElementById(id).remove();
     }
 
     save(id) {
-        const pairIndex = this.dictionary.findIndex((pair) => pair.id === id);
-        let pair = this.dictionary[pairIndex];
+        let pair = this.getPair(id);
 
         pair.ukrainian = document.getElementById(id).children[0].children[0].value;
         pair.english = document.getElementById(id).children[1].children[0].value;
-
-        document.getElementById(id).innerHTML = `
-        <tr id="${pair.id}">
-            <td style="color: black">
-                ${pair.ukrainian}
-            </td>
-            <td style="color: black">
-                ${pair.english}
-            </td>
-            <td>
-                <button data-id="${pair.id}" class="edit-button">Edit</button>
-                <button data-id="${pair.id}" class="delete-button">Delete</button>
-            </td>
-        </tr>`
-    }
-
-    cancel(id) {
-        const pairIndex = this.dictionary.findIndex((pair) => pair.id === id);
-        let pair = this.dictionary[pairIndex];
-
-        document.getElementById(id).innerHTML = `
-            <tr id="${pair.id}">
-                <td style="color: black">
-                    ${pair.ukrainian}
-                </td>
-                <td style="color: black">
-                    ${pair.english}
-                </td>
-                <td>
-                    <button data-id="${pair.id}" class="edit-button">Edit</button>
-                    <button data-id="${pair.id}" class="delete-button">Delete</button>
-                </td>
-            </tr>`
     }
 }

@@ -11,9 +11,9 @@ export default class Menu {
     }
 
     init() {
-        document.querySelector('#main').innerHTML = `<button class="test">Test</button>
+        document.querySelector('#main').innerHTML = `
+            <button class="test">Test</button>
             <button class="dictionary">Dictionary</button>`
-
     }
 
     onClick(e) {
@@ -33,10 +33,10 @@ export default class Menu {
 
     test() {
         if (this.controller.model.dictionary.length < 3) {
-            alert("Add some words at least 3");
+            alert(`Add some words at least ${amountAnswers}`);
         }
         else {
-            controller.view.test();
+            controller.view.test(controller.n);
         }
     }
 
@@ -45,17 +45,19 @@ export default class Menu {
     }
 }
 
+
+const amountAnswers = 3;
 let model = new Model();
 let view = new View(model);
-let controller = new Controller(model, view);
+let controller = new Controller(model, view, amountAnswers);
 
 let menu = new Menu(controller);
 
-menu.controller.model.add_('Вода', 'Water');
-menu.controller.model.add_('Банка', 'Jar');
-menu.controller.model.add_('Книга', 'Book');
-menu.controller.model.add_('Дерево', 'Tree');
-menu.controller.model.add_('Рослина', 'Plant');
-menu.controller.model.add_('Сік', 'Juice');
-menu.controller.model.add_('Вітер', 'Wind');
-menu.controller.model.add_('Вікно', 'Window');
+menu.controller.model.add('Вода', 'Water');
+menu.controller.model.add('Банка', 'Jar');
+menu.controller.model.add('Книга', 'Book');
+menu.controller.model.add('Дерево', 'Tree');
+menu.controller.model.add('Рослина', 'Plant');
+menu.controller.model.add('Сік', 'Juice');
+menu.controller.model.add('Вітер', 'Wind');
+menu.controller.model.add('Вікно', 'Window');

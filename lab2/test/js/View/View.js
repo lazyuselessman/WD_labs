@@ -3,41 +3,38 @@ export default class View {
         this.model = model;
     }
 
-    test() {
-        document.querySelector('#main').innerHTML = `<h3>Test</h3>
-            <div id="test"></div>
-            <div><button class="back">back</button></div>`
-
-        const pairs = this.model.getPairs();
+    test(n) {
+        const pairs = this.model.getPairs(n);
         const pairsHtml = pairs.map((pair) => {
             return `
             <input type="radio" name="answers" value="${pair.id}">${pair.english}<br>`;
         }).join("");
-
-        const correctPair = this.model.getCorrectPair(pairs);
-        document.querySelector('#test').innerHTML = `${correctPair.ukrainian}
-            <div id="answers">
-                ${pairsHtml}
+        document.querySelector('#main').innerHTML = `
+            <h3>Test</h3>
+            <div id="test">
+                ${this.model.correctPair.ukrainian}
+                <div id="answers">
+                    ${pairsHtml}
+                </div>
+                <div id="correctAnswer">
+                    <button class="submit-button">Submit</button>
+                </div>    
             </div>
-            <div id="correctAnswer">
-                <button class="submit-button">Submit</button>
-            </div>
-            `
+            <div>
+                <button class="back">back</button>
+            </div>`
     }
 
     correctAnswer() {
-        document.querySelector('#correctAnswer').innerHTML = `Correct answer is ` +
-            this.model.correctPair.english +
-            `<br>
+        document.querySelector('#correctAnswer').innerHTML = `
+            Correct answer is  ${this.model.correctPair.english}
+            <br>
             Correct answers: <span id="result"></span>
             <br>
             <button class="next-button">Next</button>`;
     }
 
     dictionary() {
-        document.querySelector('#main').innerHTML = `<h3>Dictionary</h3>
-            <div id="settings"></div>
-            <div><button class="back">back</button></div>`
         const pairsHtml = this.model.dictionary.map((pair) => {
             return `
                 <tr id="${pair.id}">
@@ -54,7 +51,73 @@ export default class View {
                 </tr>`;
         }).join("");
 
-        document.querySelector('#settings').innerHTML = `<table border="1"><tr><th>Ukrainian</th><th>English</th><th>Operation</th></tr>${pairsHtml}</table>
-        <button class="add-button">Add</button>`
+        document.querySelector('#main').innerHTML = `<h3>Dictionary</h3>
+            <div id="dictionary">
+                <table border="1" id="table">
+                    <tr>
+                        <th>Ukrainian</th>
+                        <th>English</th>
+                        <th>Operation</th>
+                    </tr>
+                    ${pairsHtml}
+                </table>
+                <button class="add-button">Add</button>
+            </div>
+            <div>
+                <button class="back">back</button>
+            </div>`
+    }
+
+    add(pair) {
+        let p = document.createElement("tr");
+        p.id = pair.id;
+        p.innerHTML = `
+            <td style="color: black">
+            ${pair.ukrainian}
+            </td>
+            <td style="color: black">
+                ${pair.english}
+            </td>
+            <td>
+                <button data-id="${pair.id}" class="edit-button">Edit</button>
+                <button data-id="${pair.id}" class="delete-button">Delete</button>
+            </td>`
+        document.getElementById("table").children[0].appendChild(p);
+    }
+
+    edit(pair) {
+        document.getElementById(pair.id).innerHTML = `
+            <tr id="${pair.id}">
+                <td style="color: black">
+                    <input type="text" value="${pair.ukrainian}">
+                </td>
+                <td style="color: black">
+                    <input type="text" value="${pair.english}">
+                </td>
+                <td>
+                    <button data-id="${pair.id}" class="save-button">Save</button>
+                    <button data-id="${pair.id}" class="cancel-button">Cancel</button>
+                </td>
+            </tr>`
+    }
+
+    refresh(pair) {
+        document.getElementById(pair.id).innerHTML = `
+        <tr id="${pair.id}">
+            <td style="color: black">
+                ${pair.ukrainian}
+            </td>
+            <td style="color: black">
+                ${pair.english}
+            </td>
+            <td>
+                <button data-id="${pair.id}" class="edit-button">Edit</button>
+                <button data-id="${pair.id}" class="delete-button">Delete</button>
+            </td>
+        </tr>`
+    }
+
+    delete(id) {
+        document.getElementById(id).remove();
     }
 }

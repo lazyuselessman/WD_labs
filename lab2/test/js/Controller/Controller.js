@@ -1,7 +1,8 @@
 export default class Controller {
-    constructor(model, view) {
+    constructor(model, view, n) {
         this.model = model;
         this.view = view;
+        this.n = n;
         document.querySelector('#main').addEventListener('click', (e) => this.onClick(e)); // 'settings' changes
     }
 
@@ -34,28 +35,40 @@ export default class Controller {
             this.next();
             return;
         }
-
     }
 
     addPair() {
-        this.model.add();
-        this.view.dictionary();
+        const ukrainian = prompt('Enter ukrainian word:', '');
+        const english = prompt('Enter english word:', '');
+
+        if (ukrainian != '' && english != '') {
+            const pair = this.model.add(ukrainian, english);
+            this.view.add(pair);
+        }
+        else {
+            alert('Fill both inputs!')
+        }
     }
 
     editPair(id) {
-        this.model.edit(id);
+        const pair = this.model.getPair(id);
+        this.view.edit(pair);
     }
 
     deletePair(id) {
         this.model.delete(id);
+        this.view.delete(id);
     }
 
     savePair(id) {
         this.model.save(id);
+        const pair = this.model.getPair(id);
+        this.view.refresh(pair);
     }
 
     cancelPair(id) {
-        this.model.cancel(id);
+        const pair = this.model.getPair(id);
+        this.view.refresh(pair);
     }
 
     submit() {
@@ -64,6 +77,6 @@ export default class Controller {
     }
 
     next() {
-        this.view.test();
+        this.view.test(this.n);
     }
 }
