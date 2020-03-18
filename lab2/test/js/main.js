@@ -32,21 +32,21 @@ export default class Menu {
     }
 
     test() {
-        if (this.controller.model.dictionary.length < 3) {
+        if (this.controller.model.dictionary.length < amountAnswers) {
             alert(`Add some words at least ${amountAnswers}`);
         }
         else {
-            controller.view.test(controller.n);
+            controller.next();
         }
     }
 
     dictionary() {
-        controller.view.dictionary();
+        controller.dictionary();    
     }
 }
 
 
-const amountAnswers = 3;
+const amountAnswers = 4;
 let model = new Model();
 let view = new View(model);
 let controller = new Controller(model, view, amountAnswers);

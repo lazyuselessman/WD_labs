@@ -3,7 +3,7 @@ export default class Controller {
         this.model = model;
         this.view = view;
         this.n = n;
-        document.querySelector('#main').addEventListener('click', (e) => this.onClick(e)); // 'settings' changes
+        document.querySelector('#main').addEventListener('click', (e) => this.onClick(e)); // 'main' changes
     }
 
     onClick(e) {
@@ -35,6 +35,11 @@ export default class Controller {
             this.next();
             return;
         }
+    }
+
+    dictionary() {
+        const dictionary = this.model.getDictionary();
+        this.view.dictionary(dictionary);
     }
 
     addPair() {
@@ -73,10 +78,13 @@ export default class Controller {
 
     submit() {
         this.model.submit();
-        this.view.correctAnswer();
+        const correctPair = this.model.getCorrectPair();
+        this.view.correctAnswer(correctPair);
     }
 
     next() {
-        this.view.test(this.n);
+        const pairs = this.model.getPairs(this.n);
+        const correctPair = this.model.getCorrectPair();
+        this.view.test(this.n, pairs, correctPair);
     }
 }

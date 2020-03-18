@@ -1,10 +1,5 @@
 export default class View {
-    constructor(model) {
-        this.model = model;
-    }
-
-    test(n) {
-        const pairs = this.model.getPairs(n);
+    test(n, pairs, correctPair) {
         const pairsHtml = pairs.map((pair) => {
             return `
             <input type="radio" name="answers" value="${pair.id}">${pair.english}<br>`;
@@ -12,7 +7,7 @@ export default class View {
         document.querySelector('#main').innerHTML = `
             <h3>Test</h3>
             <div id="test">
-                ${this.model.correctPair.ukrainian}
+                ${correctPair.ukrainian}
                 <div id="answers">
                     ${pairsHtml}
                 </div>
@@ -25,17 +20,17 @@ export default class View {
             </div>`
     }
 
-    correctAnswer() {
+    correctAnswer(pair) {
         document.querySelector('#correctAnswer').innerHTML = `
-            Correct answer is  ${this.model.correctPair.english}
+            Correct answer is  ${pair.english}
             <br>
             Correct answers: <span id="result"></span>
             <br>
             <button class="next-button">Next</button>`;
     }
 
-    dictionary() {
-        const pairsHtml = this.model.dictionary.map((pair) => {
+    dictionary(dictionary) {
+        const pairsHtml = dictionary.map((pair) => {
             return `
                 <tr id="${pair.id}">
                     <td style="color: black">

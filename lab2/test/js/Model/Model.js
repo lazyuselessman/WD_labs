@@ -36,6 +36,14 @@ export default class Model {
         return pairs;
     }
 
+    getDictionary() {
+        return this.dictionary;
+    }
+
+    getCorrectPair() {
+        return this.correctPair;
+    }
+
     submit() {
         if (window.Worker) {
             const answers = document.getElementById("answers").children;
